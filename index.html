@@ -232,6 +232,133 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/04/redisCache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ZhangYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张勇  博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/04/redisCache/" itemprop="url">redis cache 操作</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-04T11:02:58+08:00">
+                2018-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="实体缓存方法"><a href="#实体缓存方法" class="headerlink" title="实体缓存方法"></a>实体缓存方法</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Template template =</span><br><span class="line">            Cache.hget(CacheName.TEMPLATE + sysService.getEnterpriseId(), customerId+<span class="string">""</span>, Template.class,</span><br><span class="line">            <span class="keyword">new</span> ILoader() &#123;</span><br><span class="line">            	<span class="meta">@Override</span></span><br><span class="line">            	<span class="function"><span class="keyword">public</span> Object <span class="title">load</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                	<span class="keyword">return</span> pfShopTemplateService.queryTemplate(sysService.getEnterpriseId(),customerId);</span><br><span class="line">            	&#125;</span><br><span class="line">        	&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="list缓存方法"><a href="#list缓存方法" class="headerlink" title="list缓存方法"></a>list缓存方法</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">List&lt;PfGoodsCommodityListEntity&gt; list = Cache.hgetList(CacheName.COMMODITY_LIST+params.get(<span class="string">"goodsId"</span>).toString(),</span><br><span class="line">		CacheKeyUtil.getKey(params), PfGoodsCommodityListEntity.class,</span><br><span class="line">        <span class="keyword">new</span> ILoader() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Object <span class="title">load</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span>  pfGoodsInfoDao.queryCommodityList(params);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="ILoader-接口"><a href="#ILoader-接口" class="headerlink" title="ILoader 接口"></a>ILoader 接口</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILoader</span> </span>&#123;</span><br><span class="line">	<span class="function">Object <span class="title">load</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Cache-把注入的方法转为-静态方法"><a href="#Cache-把注入的方法转为-静态方法" class="headerlink" title="Cache 把注入的方法转为 静态方法"></a>Cache 把注入的方法转为 静态方法</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cache</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> BaseCache baseCache;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Cache cache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cache = <span class="keyword">this</span>;</span><br><span class="line">        cache.baseCache = <span class="keyword">this</span>.baseCache;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hset</span><span class="params">(String cacheName,String key, Object object)</span> </span>&#123;</span><br><span class="line">        cache.baseCache.hset(cacheName,key,object);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">hgetList</span><span class="params">(String cacheName,String key, Class&lt;T&gt; clazz, ILoader iLoader)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cache.baseCache.hgetList(cacheName,key,clazz,iLoader);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">hget</span><span class="params">(String cacheName,String key,Class&lt;T&gt; clazz, ILoader iLoader)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cache.baseCache.hget(cacheName, key,clazz, iLoader);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="BaseCache-工具类"><a href="#BaseCache-工具类" class="headerlink" title="BaseCache 工具类"></a>BaseCache 工具类</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseCache</span> <span class="keyword">implements</span> <span class="title">ICache</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisService redisService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">hget</span><span class="params">(String cacheName,String key, Class&lt;T&gt; clazz, ILoader iLoader)</span> </span>&#123;</span><br><span class="line">        Object data = redisService.hget(cacheName, key, clazz);</span><br><span class="line">        <span class="keyword">if</span> (data == <span class="keyword">null</span>) &#123;</span><br><span class="line">            data = iLoader.load();</span><br><span class="line">            hset(cacheName, key, data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (T) data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">hgetList</span><span class="params">(String cacheName,String key, Class&lt;T&gt; clazz, ILoader iLoader)</span> </span>&#123;</span><br><span class="line">        Object data = redisService.hgetList(cacheName,key,clazz);</span><br><span class="line">        <span class="keyword">if</span> (data == <span class="keyword">null</span>) &#123;</span><br><span class="line">            data = iLoader.load();</span><br><span class="line">            hset(cacheName, key, data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (List&lt;T&gt;) data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hset</span><span class="params">(String cacheName, String key, Object value)</span> </span>&#123;</span><br><span class="line">        redisService.hset(cacheName, key, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="RedisServer"><a href="#RedisServer" class="headerlink" title="RedisServer"></a>RedisServer</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate&lt;String, Object&gt; redisTemplate;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ValueOperations&lt;String, String&gt; valueOperations;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> HashOperations&lt;String, String, Object&gt; hashOperations;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">hget</span><span class="params">(String cacheName,String key,Class&lt;T&gt; clazz)</span></span>&#123;</span><br><span class="line">        Object value = hashOperations.get(cacheName,key);</span><br><span class="line">        <span class="keyword">return</span> value == <span class="keyword">null</span> ? <span class="keyword">null</span> : fromJson(toJson(value), clazz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hset</span><span class="params">(String cacheName,String key,Object value)</span></span>&#123;</span><br><span class="line">        hashOperations.put(cacheName,key,toJson(value));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">hgetList</span><span class="params">(String cacheName,String key,Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line">        Object value = hashOperations.get(cacheName,key);</span><br><span class="line">        <span class="keyword">return</span> parseString2List(toJson(value),clazz);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="缓存-json-转换为-list-工具方法"><a href="#缓存-json-转换为-list-工具方法" class="headerlink" title="缓存 json 转换为 list 工具方法"></a>缓存 json 转换为 list 工具方法</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">parseStringList</span><span class="params">(String json,Class clazz)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gson.fromJson(json, <span class="keyword">new</span> ParameterizedTypeImpl(clazz));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>  <span class="class"><span class="keyword">class</span> <span class="title">ParameterizedTypeImpl</span> <span class="keyword">implements</span> <span class="title">ParameterizedType</span> </span>&#123;</span><br><span class="line">    Class clazz;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ParameterizedTypeImpl</span><span class="params">(Class clz)</span> </span>&#123;</span><br><span class="line">        clazz = clz;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Type[] getActualTypeArguments() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Type[]&#123;clazz&#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Type <span class="title">getRawType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> List.class;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Type <span class="title">getOwnerType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="缓存-json-转换为-实体的工具方法"><a href="#缓存-json-转换为-实体的工具方法" class="headerlink" title="缓存 json 转换为 实体的工具方法"></a>缓存 json 转换为 实体的工具方法</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; <span class="function">T <span class="title">fromJson</span><span class="params">(String json, Class&lt;T&gt; clazz)</span></span>&#123;</span><br><span class="line">       <span class="keyword">return</span> gson.fromJson(json, clazz);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/29/git-hexo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -875,7 +1002,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
