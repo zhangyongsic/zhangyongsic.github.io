@@ -232,6 +232,127 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/03/red-picture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ZhangYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张勇  博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/03/red-picture/" itemprop="url">JAVA处理不正确处理图片ICC信息蒙上红色的问题 放弃ImageIO.read()</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-03T16:31:53+08:00">
+                2018-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="放弃-BufferedImage-image-ImageIO-read-inputStream"><a href="#放弃-BufferedImage-image-ImageIO-read-inputStream" class="headerlink" title="放弃 BufferedImage image = ImageIO.read(inputStream)"></a>放弃 BufferedImage image = ImageIO.read(inputStream)</h1><h2 id="ImageIO-read-方法读取图片时可能存在不正确处理图片ICC信息的问题，ICC为JPEG图片格式中的一种头部信息，导致渲染图片前景色时蒙上一层红色。"><a href="#ImageIO-read-方法读取图片时可能存在不正确处理图片ICC信息的问题，ICC为JPEG图片格式中的一种头部信息，导致渲染图片前景色时蒙上一层红色。" class="headerlink" title="ImageIO.read()方法读取图片时可能存在不正确处理图片ICC信息的问题，ICC为JPEG图片格式中的一种头部信息，导致渲染图片前景色时蒙上一层红色。"></a>ImageIO.read()方法读取图片时可能存在不正确处理图片ICC信息的问题，ICC为JPEG图片格式中的一种头部信息，导致渲染图片前景色时蒙上一层红色。</h2><h1 id="使用-JDK中提供的Image-src-Toolkit-getDefaultToolkit"><a href="#使用-JDK中提供的Image-src-Toolkit-getDefaultToolkit" class="headerlink" title="使用 JDK中提供的Image src=Toolkit.getDefaultToolkit()"></a>使用 JDK中提供的Image src=Toolkit.getDefaultToolkit()</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Image src=Toolkit.getDefaultToolkit().getImage(file.getPath());</span><br><span class="line"></span><br><span class="line">Image imageTookit = Toolkit.getDefaultToolkit().createImage(bytes);</span><br><span class="line"></span><br><span class="line">BufferedImage image=BufferedImageBuilder.toBufferedImage(src);<span class="comment">//Image to BufferedImage</span></span><br></pre></td></tr></table></figure>
+<h1 id="BufferedImageBuilder"><a href="#BufferedImageBuilder" class="headerlink" title="BufferedImageBuilder"></a>BufferedImageBuilder</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.core.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.swing.*;</span><br><span class="line"><span class="keyword">import</span> java.awt.*;</span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BufferedImageBuilder</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BufferedImage <span class="title">toBufferedImage</span><span class="params">(Image image)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (image <span class="keyword">instanceof</span> BufferedImage) &#123;</span><br><span class="line">            <span class="keyword">return</span> (BufferedImage) image;</span><br><span class="line">        &#125;</span><br><span class="line">        image = <span class="keyword">new</span> ImageIcon(image).getImage();</span><br><span class="line">        BufferedImage bimage = <span class="keyword">null</span>;</span><br><span class="line">        GraphicsEnvironment ge = GraphicsEnvironment</span><br><span class="line">                .getLocalGraphicsEnvironment();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> transparency = Transparency.OPAQUE;</span><br><span class="line">            GraphicsDevice gs = ge.getDefaultScreenDevice();</span><br><span class="line">            GraphicsConfiguration gc = gs.getDefaultConfiguration();</span><br><span class="line">            bimage = gc.createCompatibleImage(image.getWidth(<span class="keyword">null</span>),</span><br><span class="line">                    image.getHeight(<span class="keyword">null</span>), transparency);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (HeadlessException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (bimage == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> type = BufferedImage.TYPE_INT_RGB;</span><br><span class="line">            bimage = <span class="keyword">new</span> BufferedImage(image.getWidth(<span class="keyword">null</span>),</span><br><span class="line">                    image.getHeight(<span class="keyword">null</span>), type);</span><br><span class="line">        &#125;</span><br><span class="line">        Graphics g = bimage.createGraphics();</span><br><span class="line">        g.drawImage(image, <span class="number">0</span>, <span class="number">0</span>, <span class="keyword">null</span>);</span><br><span class="line">        g.dispose();</span><br><span class="line">        <span class="keyword">return</span> bimage;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="特别鸣谢"><a href="#特别鸣谢" class="headerlink" title="特别鸣谢"></a>特别鸣谢</h1><h2 id="https-blog-csdn-net-xz0125pr-article-details-52442717"><a href="#https-blog-csdn-net-xz0125pr-article-details-52442717" class="headerlink" title="https://blog.csdn.net/xz0125pr/article/details/52442717"></a><a href="https://blog.csdn.net/xz0125pr/article/details/52442717" target="_blank" rel="noopener">https://blog.csdn.net/xz0125pr/article/details/52442717</a></h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/04/redisCache/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1002,7 +1123,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
